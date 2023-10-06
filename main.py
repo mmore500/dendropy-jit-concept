@@ -3,7 +3,7 @@ import random
 
 import alifedata_phyloinformatics_convert as apc
 import dendropy as dp
-from dendropy.calculate.treemeasure import treeness as dp_treeness
+from dendropy.calculate.treemeasure import treeness
 import numba as nb
 
 from pylib import shim
@@ -33,21 +33,21 @@ if __name__ == "__main__":
 
     # create just-in-time compiled (jit) version of library func
     # note that this requires zero internal library modifications
-    jit_treeness = nb.njit(dp_treeness)  # "nb" is Numba jit lib
+    jit_treeness = nb.njit(treeness)  # "nb" is Numba jit lib
 
     # PART II: DO EXAMPLE CALCULATIONS
     ##################################
     # do treeness calculation with pure-py dendropy tree & func
-    dp_result = dp_treeness(dp_tree)
+    purepy_result = treeness(dp_tree)
 
     # do treeness calculation with numpy-based tree & jitted func
     # (warms up the jit compiler cache for benchmark below)
-    shim_result = jit_treeness(shim_tree)
+    jitted_result = jit_treeness(shim_tree)
 
     # compare pure-py and jitted treeness result, should be identical
-    print(f"{dp_result=} {shim_result=}")
+    print(f"{purepy_result=} {jitted_result=}")
 
     # compare pure-py and jitted treeness performance
-    shim_time = timeit(lambda: jit_treeness(shim_tree), number=10**3)
-    dp_time = timeit(lambda: dp_treeness(dp_tree), number=10**3)
-    print(f"{dp_time=} {shim_time=}")
+    jitted_time = timeit(lambda: jit_treeness(shim_tree), number=10**3)
+    purepy_time = timeit(lambda: treeness(dp_tree), number=10**3)
+    print(f"{purepy_time=} {jitted_time=}")
