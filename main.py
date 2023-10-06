@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     # create just-in-time compiled (jit) version of library func
     # note that this requires zero internal library modifications
-    jit_treeness = nb.njit(dp_treeness)
+    jit_treeness = nb.njit(dp_treeness)  # "nb" is Numba jit lib
 
     # PART II: DO EXAMPLE CALCULATIONS
     ##################################
